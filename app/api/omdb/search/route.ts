@@ -9,7 +9,6 @@ export async function GET(req: NextRequest) {
     const type = searchParams.get("type") || ""; // movie | series | episode
     const y = searchParams.get("y") || ""; // year
     const page = searchParams.get("page") || "1"; // 1-100
-    const r = searchParams.get("r") || "json"; // json | xml
 
     if (!q) {
       return NextResponse.json(
@@ -32,7 +31,6 @@ export async function GET(req: NextRequest) {
     if (type) url.searchParams.set("type", type);
     if (y) url.searchParams.set("y", y);
     if (page) url.searchParams.set("page", page);
-    if (r) url.searchParams.set("r", r);
 
     const res = await fetch(url.toString(), { cache: "no-store" });
     const data = await res.json();
