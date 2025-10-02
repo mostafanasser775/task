@@ -10,15 +10,12 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent } from "@/components/ui/card";
 
 async function fetchDetails(id: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_LOCAL_API}api/omdb/details`);
-  url.searchParams.set("i", id);
-  url.searchParams.set("plot", "full");
+  const url = new URL(`http://www.omdbapi.com/?apikey=${process.env.NEXT_PUBLIC_OMDB_API_KEY}&i=${id}&plot=full`);
   const res = await fetch(url.toString(), { cache: "no-store" });
-  return (await res.json()) ;
+  return (await res.json());
 }
 
 export default async function MoviePage({
@@ -58,44 +55,57 @@ export default async function MoviePage({
       {hasError ? (
         <p className="text-sm text-red-600">{data.Error || "Movie not found"}</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="md:col-span-1 overflow-hidden">
-            <CardContent className="p-0">
-              <AspectRatio ratio={2/3} className="bg-muted">
-                <ImageWithFallback src={data.Poster} alt={data.Title} className="w-full h-full object-cover" />
-              </AspectRatio>
-            </CardContent>
-          </Card>
-          <div className="md:col-span-2 space-y-3">
-            <h1 className="text-3xl font-semibold tracking-tight">
-              {data.Title} {data.Year ? <span className="text-muted-foreground text-xl">({data.Year})</span> : null}
-            </h1>
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              {data.Type ? <Badge variant="outline" className="capitalize">{data.Type}</Badge> : null}
-              {data.Rated ? <Badge variant="secondary">{data.Rated}</Badge> : null}
-              {data.Runtime ? <Badge variant="secondary">{data.Runtime}</Badge> : null}
-              {data.Language ? <Badge variant="secondary">{data.Language}</Badge> : null}
-              {data.Released ? <Badge variant="secondary">{data.Released}</Badge> : null}
-            </div>
-
-            {data.Genre && (
-              <p className="text-sm"><span className="text-muted-foreground">Genres:</span> {data.Genre}</p>
-            )}
-            {data.Director && (
-              <p className="text-sm"><span className="text-muted-foreground">Director:</span> {data.Director}</p>
-            )}
-            {data.Actors && (
-              <p className="text-sm"><span className="text-muted-foreground">Actors:</span> {data.Actors}</p>
-            )}
-
-            <Separator className="my-2" />
-
-            {data.Plot && (
-              <div className="space-y-2">
-                <h2 className="text-xl font-medium">Plot</h2>
-                <p className="leading-relaxed text-sm md:text-base">{data.Plot}</p>
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="md:col-span-1 overflow-hidden bg-muted/10 backdrop-blur-sm p-0">
+              <CardContent className="p-0">
+                <div className="relative  ">
+                  <ImageWithFallback 
+                    src={data.Poster} 
+                    alt={data.Title} 
+                    className="w-full h-full object-cover rounded-lg shadow-xl" 
+                    width={400}
+                    height={600}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+            <div className="md:col-span-2 space-y-6">
+              <div className="space-y-4">
+                <h1 className="text-4xl font-bold tracking-tight">
+                  {data.Title} {data.Year ? 
+                    <span className="text-muted-foreground text-2xl">({data.Year})</span> : null}
+                </h1>
+                <div className="flex flex-wrap items-center gap-3 text-sm">
+                  {data.Type ? <Badge variant="outline" className="capitalize font-medium">{data.Type}</Badge> : null}
+                  {data.Rated ? <Badge variant="secondary" className="font-medium">{data.Rated}</Badge> : null}
+                  {data.Runtime ? <Badge variant="secondary" className="font-medium">{data.Runtime}</Badge> : null}
+                  {data.Language ? <Badge variant="secondary" className="font-medium">{data.Language}</Badge> : null}
+                  {data.Released ? <Badge variant="secondary" className="font-medium">{data.Released}</Badge> : null}
+                </div>
               </div>
-            )}
+
+              <div className="space-y-4">
+                {data.Genre && (
+                  <p className="text-base"><span className="text-muted-foreground font-medium">Genres:</span> {data.Genre}</p>
+                )}
+                {data.Director && (
+                  <p className="text-base"><span className="text-muted-foreground font-medium">Director:</span> {data.Director}</p>
+                )}
+                {data.Actors && (
+                  <p className="text-base"><span className="text-muted-foreground font-medium">Actors:</span> {data.Actors}</p>
+                )}
+              </div>
+
+              <Separator className="my-6" />
+
+              {data.Plot && (
+                <div className="space-y-4">
+                  <h2 className="text-2xl font-semibold">Plot</h2>
+                  <p className="leading-relaxed text-base md:text-lg text-muted-foreground">{data.Plot}</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

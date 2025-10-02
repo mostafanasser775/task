@@ -11,16 +11,16 @@ type SearchParams = { q?: string; page?: string; type?: string; y?: string };
 
 async function fetchMovies(searchParams: SearchParams): Promise<OmdbSearchResponse> {
   const { q = "", page = "1", type = "", y = "" } = searchParams;
-  if (!q) return { Response: "False", Error: "Enter a search term" } ;
-  const url = new URL(`${process.env.NEXT_PUBLIC_LOCAL_API}/api/omdb/search`);
-  url.searchParams.set("q", q);
+  if (!q) return { Response: "False", Error: "Enter a search term" };
+
+  const url = new URL(`http://www.omdbapi.com/?apikey=${process.env.NEXT_PUBLIC_OMDB_API_KEY}`);
+  url.searchParams.set("s", q);
   url.searchParams.set("page", page);
   if (type) url.searchParams.set("type", type);
   if (y) url.searchParams.set("y", y);
 
-
   const res = await fetch(url.toString(), { cache: "no-store" });
-  return (await res.json()) ;
+  return (await res.json());
 }
 
 export default async function Home({ searchParams }: { searchParams: Promise<SearchParams> }) {

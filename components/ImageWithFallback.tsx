@@ -33,7 +33,6 @@ export default function ImageWithFallback({
         fill={fill}
         width={!fill ? width : undefined}
         height={!fill ? height : undefined}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         priority
         onError={() => setError(true)}
         unoptimized={imageSource === placeholderImage}
